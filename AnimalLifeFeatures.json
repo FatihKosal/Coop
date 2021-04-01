@@ -1,0 +1,14 @@
+{
+  "AnimalLifeFeatures": [
+    {
+      "AnimalType": 1,
+      "MaxLifeDuration": 60,
+      "MatingAgeBeginFemale": 1,
+      "MatingAgeEndFemale": 40,
+      "MatingAgeBeginMale": 1,
+      "MatingAgeEndMale": 40,
+      "PregnancyDuration": 1,
+      "MaxBabyCountDuringBirth": 12
+    }
+  ]
+}
