@@ -25,7 +25,7 @@ namespace Coop
         {
             lock (obj)
             {
-                if (this.animalList.Count >= this.maxAnimalLimit)
+                if (this.animalList.Count(a=>a.AnimalState != AnimalState.Death) == this.maxAnimalLimit)
                 {
                     this.cancellationTokenSource.Cancel();
                 }
