@@ -42,7 +42,7 @@ namespace Coop
             //----------------------------Sick Case Begin-----------------------------------------------//
             if (this.AnimalState == AnimalState.Sick)
             {
-                if (this.SickDateBegin?.Subtract(DateTime.Now).TotalMilliseconds >= 500
+                if (this.SickDateBegin?.Subtract(DateTime.Now).TotalMilliseconds >= (int)animalLifeFeature.SickImprovementDuration * 1000
                 ) //assumed half month improvement duration
                 {
                     this.AnimalState =
@@ -116,7 +116,7 @@ namespace Coop
                     }
 
 
-                    Thread.Sleep(100); //Mate wait duration for another mate 
+                    Thread.Sleep((int)animalLifeFeature.MateWaitDurationForAnotherMate * 1000); //Mate wait duration for another mate 
                 }
             }
         }

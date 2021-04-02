@@ -8,16 +8,19 @@ namespace Coop
 {
     public class AnimaLifecycleService
     {
+        private int maxAnimalLimit { get; set; }
         private List<AnimalLifeFeature> animalLifeFeatures;
 
-        public AnimaLifecycleService(List<AnimalLifeFeature> _animalLifeFeatures)
+        public AnimaLifecycleService(List<AnimalLifeFeature> _animalLifeFeatures,int maxAnimalLimit)
         {
             this.animalLifeFeatures = _animalLifeFeatures;
+            this.maxAnimalLimit = maxAnimalLimit;
         }
 
         public Coop Simulate(int givenTimeAsMonth)
         {
-            var coop = new Coop();
+            var tokenSource = new CancellationTokenSource();
+            var coop = new Coop(this.maxAnimalLimit,tokenSource);
 
             var rabbitLifeFeature = this.animalLifeFeatures.FirstOrDefault(a => a.AnimalType == AnimalType.Rabbit);
 
@@ -40,13 +43,11 @@ namespace Coop
                 Age = DateTime.Now.AddSeconds(rabbitLifeFeature.MatingAgeBeginMale)
             };
 
-            coop.MaxAnimalLimit = 1000;
-
             coop.AddAnimal(rabbitFemale);
             coop.AddAnimal(rabbitMale);
 
             var beginDate = DateTime.Now;
-            var tokenSource = new CancellationTokenSource();
+            
             ParallelOptions parallelLoopOptions =
                 new ParallelOptions()
                 {

@@ -1,21 +1,41 @@
 using System;
+using System.Collections.Concurrent;
 using System.Collections.Generic;
 using System.Linq;
+using System.Threading;
 
 namespace Coop
 {
     public class Coop
     {
-        public int MaxAnimalLimit { get; set; }
-        private List<Animal> animalList { get; set; } = new List<Animal>();
+        private CancellationTokenSource cancellationTokenSource;
+
+        public Coop(int maxAnimalLimit, CancellationTokenSource _cancellationTokenSource)
+        {
+            this.maxAnimalLimit = maxAnimalLimit;
+            this.cancellationTokenSource = _cancellationTokenSource;
+        }
+
+        private int maxAnimalLimit { get; set; }
+        private ConcurrentBag<Animal> animalList { get; set; } = new ConcurrentBag<Animal>();
+
+        private static readonly Object obj = new Object();
 
         public void AddAnimal(Animal animal)
         {
-            if (MaxAnimalLimit == this.animalList.Count)
-                throw new ApplicationException("Coop Maximum Limit Were Exceeded");
-            if (animal.AnimalGenderType == AnimalGenderType.Female)
-                animal.BirthOccured += BirthOccuredEvent;
-            this.animalList.Add(animal);
+            lock (obj)
+            {
+                if (this.animalList.Count >= this.maxAnimalLimit)
+                {
+                    this.cancellationTokenSource.Cancel();
+                }
+                else
+                {
+                    if (animal.AnimalGenderType == AnimalGenderType.Female)
+                        animal.BirthOccured += BirthOccuredEvent;
+                    this.animalList.Add(animal);
+                }
+            }
         }
 
         private void BirthOccuredEvent(object sender, BirthOccuredEventArgs e)
@@ -38,12 +58,14 @@ namespace Coop
             if (animalState == AnimalState.Empty)
                 return this.animalList.Count(a => a.AnimalGenderType == AnimalGenderType.Female);
             else
-                return this.animalList.Count(a => a.AnimalGenderType == AnimalGenderType.Female && a.AnimalState == animalState);
+                return this.animalList.Count(a =>
+                    a.AnimalGenderType == AnimalGenderType.Female && a.AnimalState == animalState);
         }
-        
+
         public int GetAliveFemaleCount()
         {
-            return this.animalList.Count(a => a.AnimalGenderType == AnimalGenderType.Female && a.AnimalState != AnimalState.Death);
+            return this.animalList.Count(a =>
+                a.AnimalGenderType == AnimalGenderType.Female && a.AnimalState != AnimalState.Death);
         }
 
         public List<Animal> GetFemalesForMating(AnimalType animalType)
@@ -57,12 +79,14 @@ namespace Coop
             if (animalState == AnimalState.Empty)
                 return this.animalList.Count(a => a.AnimalGenderType == AnimalGenderType.Male);
             else
-                return this.animalList.Count(a => a.AnimalGenderType == AnimalGenderType.Male && a.AnimalState == animalState);
+                return this.animalList.Count(a =>
+                    a.AnimalGenderType == AnimalGenderType.Male && a.AnimalState == animalState);
         }
-        
+
         public int GetAliveMaleCount()
         {
-            return this.animalList.Count(a => a.AnimalGenderType == AnimalGenderType.Male && a.AnimalState != AnimalState.Death);
+            return this.animalList.Count(a =>
+                a.AnimalGenderType == AnimalGenderType.Male && a.AnimalState != AnimalState.Death);
         }
 
         public List<Animal> GetMalesForMating(AnimalType animalType)

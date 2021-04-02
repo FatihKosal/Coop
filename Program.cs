@@ -19,14 +19,14 @@ namespace Coop
 
             var animalLifeFeatures = config.GetSection("AnimalLifeFeatures").Get<List<AnimalLifeFeature>>();
 
-            Console.WriteLine("Write Day Count.Each second will be assumed as month");
+            var maxAnimalLimit = Convert.ToInt32(config.GetSection("MaxAnimalLimit").Value);
+            Console.WriteLine("Write Month Count.Each second will be assumed as month");
             var monthValStr = Console.ReadLine();
             int monthVal = Convert.ToInt32(monthValStr);
 
-            AnimaLifecycleService animaLifecycleService = new AnimaLifecycleService(animalLifeFeatures);
+            AnimaLifecycleService animaLifecycleService = new AnimaLifecycleService(animalLifeFeatures, maxAnimalLimit);
 
             var coop = animaLifecycleService.Simulate(monthVal);
-            
             Console.WriteLine("------------------------RESULTS--------------------------");
             Console.WriteLine("Given Time As Month");
             Console.WriteLine(monthVal.ToString());
@@ -46,6 +46,7 @@ namespace Coop
             Console.WriteLine(coop.GetFemaleCount(AnimalState.Sick).ToString());
             Console.WriteLine("Death Male Count : ");
             Console.WriteLine(coop.GetFemaleCount(AnimalState.Death).ToString());
+
             Console.ReadKey();
         }
     }

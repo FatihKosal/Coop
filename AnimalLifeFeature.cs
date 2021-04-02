@@ -10,5 +10,7 @@ namespace Coop
         public int MatingAgeEndMale { get; set; }
         public int PregnancyDuration { get; set; }
         public int MaxBabyCountDuringBirth { get; set; }
+        public decimal MateWaitDurationForAnotherMate { get; set; }
+        public decimal SickImprovementDuration { get; set; }
     }
 }
